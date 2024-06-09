@@ -85,22 +85,10 @@
     </style>
 </head>
 <body>
-    <div class="container" id="login-page">
-        <h1>Login</h1>
-        <form id="login-form">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username" required>
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password" required>
-            <button type="button" onclick="login()">Login</button>
-        </form>
-    </div>
-
-    <div class="container" id="main-interface" style="display:none;">
+    <div class="container" id="entry-point">
         <h1>Student Intern ID Record</h1>
         <button onclick="showInterface('user')">User Interface</button>
         <button onclick="showInterface('admin')">Admin Interface</button>
-        <button onclick="viewLoggedUsers()">View Logged Users</button>
     </div>
 
     <div class="container" id="user-interface" style="display:none;">
@@ -142,50 +130,19 @@
                     </tr>
                 </thead>
                 <tbody id="data-table">
-                    <!-- Data will be populated here -->
+                
                 </tbody>
             </table>
         </div>
         <div id="id-card-view" style="display:none;">
-            <!-- ID Cards will be populated here -->
+     
         </div>
         <button onclick="goBack()">Back</button>
     </div>
 
-    <div class="container" id="logged-users" style="display:none;">
-        <h1>Logged Users</h1>
-        <ul id="logged-users-list"></ul>
-        <button onclick="goBack()">Back</button>
-    </div>
-
     <script>
-        let loggedInUsers = [];
-
-        function login() {
-            const username = document.getElementById('username').value;
-            const password = document.getElementById('password').value;
-
-            // Simulating user authentication
-            if (username === 'admin' && password === 'admin') {
-                loggedInUsers.push(username);
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
-            } else if (localStorage.getItem(username) && JSON.parse(localStorage.getItem(username)).password === password) {
-                loggedInUsers.push(username);
-                document.getElementById('login-page').style.display = 'none';
-                document.getElementById('main-interface').style.display = 'block';
-            } else {
-                alert('Invalid username or password. Please try again.');
-            }
-        }
-
-        function
-        showInterface(interfaceType) {
-            if (loggedInUsers.length === 0) {
-                alert('Please login to access interfaces.');
-                return;
-            }
-            document.getElementById('main-interface').style.display = 'none';
+        function showInterface(interfaceType) {
+            document.getElementById('entry-point').style.display = 'none';
             if (interfaceType === 'user') {
                 document.getElementById('user-interface').style.display = 'block';
             } else if (interfaceType === 'admin') {
@@ -197,8 +154,19 @@
         function goBack() {
             document.getElementById('user-interface').style.display = 'none';
             document.getElementById('admin-interface').style.display = 'none';
-            document.getElementById('logged-users').style.display = 'none';
-            document.getElementById('main-interface').style.display = 'block';
+            document.getElementById('entry-point').style.display = 'block';
+        }
+
+        function showTableView() {
+            document.getElementById('table-view').style.display = 'block';
+            document.getElementById('id-card-view').style.display = 'none';
+            populateTable();
+        }
+
+        function showIDCardView() {
+            document.getElementById('table-view').style.display = 'none';
+            document.getElementById('id-card-view').style.display = 'block';
+            populateIDCards();
         }
 
         function saveData() {
@@ -229,7 +197,8 @@
             const dataTable = document.getElementById('data-table');
             dataTable.innerHTML = '';
 
-            for (let i = 0; i < localStorage.length; i++) {
+            for (let i = 0; i < localStorage.length; i++)
+            {
                 const key = localStorage.key(i);
                 const userData = JSON.parse(localStorage.getItem(key));
 
@@ -266,18 +235,6 @@
                 `;
                 idCardView.appendChild(idCard);
             }
-        }
-
-        function viewLoggedUsers() {
-            document.getElementById('main-interface').style.display = 'none';
-            document.getElementById('logged-users').style.display = 'block';
-            const userList = document.getElementById('logged-users-list');
-            userList.innerHTML = '';
-            loggedInUsers.forEach(user => {
-                const listItem = document.createElement('li');
-                listItem.textContent = user;
-                userList.appendChild(listItem);
-            });
         }
     </script>
 </body>
