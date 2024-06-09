@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Student Intern ID Record</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(45deg, #6db3f2, #1e69de);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+        .container {
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            width: 90%;
+            max-width: 600px;
+            border: 1px solid #ccc;
+            border-top: 5px solid #1e69de;
+        }
+        h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #1e69de;
+        }
+        button {
+            padding: 10px 20px;
+            margin: 10px;
+            border: none;
+            border-radius: 5px;
+            background: #1e69de;
+            color: white;
+            cursor: pointer;
+            font-size: 16px;
+            transition: background 0.3s ease;
+        }
+        button:hover {
+            background: #155bb5;
+        }
+        form {
+            text-align: left;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+        }
+        input {
+            width: calc(100% - 22px);
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            text-align: left;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ddd;
+        }
+        th {
+            background: #1e69de;
+            color: white;
+        }
+        .id-card {
+            background: #f4f4f4;
+            padding: 10px;
+            margin: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container" id="login-page">
+        <h1>Login</h1>
+        <form id="login-form">
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <button type="button" onclick="login()">Login</button>
+        </form>
+    </div>
+
+    <div class="container" id="main-interface" style="display:none;">
+        <h1>Student Intern ID Record</h1>
+        <button onclick="showInterface('user')">User Interface</button>
+        <button onclick="showInterface('admin')">Admin Interface</button>
+        <button onclick="viewLoggedUsers()">View Logged Users</button>
+    </div>
+
+    <div class="container" id="user-interface" style="display:none;">
+        <h1>User Biodata Form</h1>
+        <form id="user-form">
+            <label for="first-name">First Name:</label>
+            <input type="text" id="first-name" name="first-name" required>
+            <label for="last-name">Last Name:</label>
+            <input type="text" id="last-name" name="last-name" required>
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" required>
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required>
+            <label for="university">University Name:</label>
+            <input type="text" id="university" name="university" required>
+            <label for="semester">Semester:</label>
+            <input type="text" id="semester" name="semester" required>
+            <button type="button" onclick="saveData()">Submit</button>
+        </form>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <div class="container" id="admin-interface" style="display:none;">
+        <h1>Admin Interface</h1>
+        <button onclick="showTableView()">Table View</button>
+        <button onclick="showIDCardView()">ID Card View</button>
+        <div id="table-view">
+            <table>
+                <thead>
+                    <tr>
+                        <th>First Name</th>
+                        <th>Last Name</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>University</th>
+                        <th>Semester</th>
+                    </tr>
+                </thead>
+                <tbody id="data-table">
+                    <!-- Data will be populated here -->
+                </tbody>
+            </table>
+        </div>
+        <div id="id-card-view" style="display:none;">
+            <!-- ID Cards will be populated here -->
+        </div>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <div class="container" id="logged-users" style="display:none;">
+        <h1>Logged Users</h1>
+        <ul id="logged-users-list"></ul>
+        <button onclick="goBack()">Back</button>
+    </div>
+
+    <script>
+        let loggedInUsers = [];
+
+        function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            // Simulating user authentication
+            if (username === 'admin' && password === 'admin') {
+                loggedInUsers.push(username);
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-interface').style.display = 'block';
+            } else if (localStorage.getItem(username) && JSON.parse(localStorage.getItem(username)).password === password) {
+                loggedInUsers.push(username);
+                document.getElementById('login-page').style.display = 'none';
+                document.getElementById('main-interface').style.display = 'block';
+            } else {
+                alert('Invalid username or password. Please try again.');
+            }
+        }
+
+        function
+        showInterface(interfaceType) {
+            if (loggedInUsers.length === 0) {
+                alert('Please login to access interfaces.');
+                return;
+            }
+            document.getElementById('main-interface').style.display = 'none';
+            if (interfaceType === 'user') {
+                document.getElementById('user-interface').style.display = 'block';
+            } else if (interfaceType === 'admin') {
+                document.getElementById('admin-interface').style.display = 'block';
+                showTableView();
+            }
+        }
+
+        function goBack() {
+            document.getElementById('user-interface').style.display = 'none';
+            document.getElementById('admin-interface').style.display = 'none';
+            document.getElementById('logged-users').style.display = 'none';
+            document.getElementById('main-interface').style.display = 'block';
+        }
+
+        function saveData() {
+            const firstName = document.getElementById('first-name').value;
+            const lastName = document.getElementById('last-name').value;
+            const username = document.getElementById('username').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const university = document.getElementById('university').value;
+            const semester = document.getElementById('semester').value;
+
+            const userData = {
+                firstName,
+                lastName,
+                username,
+                email,
+                password,
+                university,
+                semester
+            };
+
+            localStorage.setItem(username, JSON.stringify(userData));
+            alert('Data saved successfully!');
+            document.getElementById('user-form').reset();
+        }
+
+        function populateTable() {
+            const dataTable = document.getElementById('data-table');
+            dataTable.innerHTML = '';
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const userData = JSON.parse(localStorage.getItem(key));
+
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${userData.firstName}</td>
+                    <td>${userData.lastName}</td>
+                    <td>${userData.username}</td>
+                    <td>${userData.email}</td>
+                    <td>${userData.university}</td>
+                    <td>${userData.semester}</td>
+                `;
+                dataTable.appendChild(row);
+            }
+        }
+
+        function populateIDCards() {
+            const idCardView = document.getElementById('id-card-view');
+            idCardView.innerHTML = '';
+
+            for (let i = 0; i < localStorage.length; i++) {
+                const key = localStorage.key(i);
+                const userData = JSON.parse(localStorage.getItem(key));
+
+                const idCard = document.createElement('div');
+                idCard.className = 'id-card';
+                idCard.innerHTML = `
+                    <p><strong>First Name:</strong> ${userData.firstName}</p>
+                    <p><strong>Last Name:</strong> ${userData.lastName}</p>
+                    <p><strong>Username:</strong> ${userData.username}</p>
+                    <p><strong>Email:</strong> ${userData.email}</p>
+                    <p><strong>University:</strong> ${userData.university}</p>
+                    <p><strong>Semester:</strong> ${userData.semester}</p>
+                `;
+                idCardView.appendChild(idCard);
+            }
+        }
+
+        function viewLoggedUsers() {
+            document.getElementById('main-interface').style.display = 'none';
+            document.getElementById('logged-users').style.display = 'block';
+            const userList = document.getElementById('logged-users-list');
+            userList.innerHTML = '';
+            loggedInUsers.forEach(user => {
+                const listItem = document.createElement('li');
+                listItem.textContent = user;
+                userList.appendChild(listItem);
+            });
+        }
+    </script>
+</body>
+</html>
